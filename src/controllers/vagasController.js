@@ -21,13 +21,34 @@ async function listarVaga(id){
     }
 }
 async function criarVaga(dados){
-    return "criarVaga";
+    try {
+        return await executarSQL(`INSERT * FROM vagas WHERE vaga_id = ${id};`);
+    } catch (error) {
+        return {
+            message: error.message,
+            status: "error"
+        }
+    }
 }
 async function editarVaga(id, dados){
-    return "editarVaga";
+    try {
+        return await executarSQL(`UPDATE * FROM vagas WHERE vaga_id = ${id};`);
+    } catch (error) {
+        return {
+            message: error.message,
+            status: "error"
+        }
+    }
 }
 async function deletarVaga(id){
-    return "deletarVaga";
+    try {
+        return await executarSQL(`DELETE  * FROM vagas WHERE vaga_id = ${id};`);
+    } catch (error) {
+        return {
+            message: error.message,
+            status: "error"
+        }
+    }
 }
 
 module.exports = {
