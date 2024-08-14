@@ -11,7 +11,7 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
     res.send(await criarVaga(req.body));
 });
-router.post("/:id", async (req, res) => {
+router.patch("/:id", async (req, res) => {
     res.send(await editarVaga(req.params.id, req.body));
 });
 router.delete("/:id", async (req, res) => {

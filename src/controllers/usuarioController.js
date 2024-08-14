@@ -1,23 +1,41 @@
 const { executarSQL } = require("../database");
+const bcrypt  = require("bcrypt");
 
-async function listarUsuarios(){
+async function  logarUsuario(dados){
     try {
-        return await executarSQL(`SELECT * FROM usuarios;`);
-    } catch (error) {
-        return {
-            message: error.message,
-            status: "error"
+        if(!dados.usuario_email || dados.usuario_email == ""){
+            throw new Error("Campo email é obrigatório");
         }
-    }
-}
 
-async function listarUsuario(id){
-    try {
-        return await executarSQL(`SELECT * FROM vagas WHERE usuario_id = ${id};`);
+        if(!dados.usuario_senha || dados.usuario_senha == ""){
+            throw new Error("Campo senha é obrigatório");
+        }
+
+        const res = await executarSQL(`SELECT * FROM usuarios WHERE usuario_email = '${dados.usuario_email}';`);
+
+        if(res.length > 0){
+            const compare = await bcrypt.compare(dados.usuario_senha, res[0].usuario_senha);
+            if(compare){
+                const token = jwt.sign({ id: res.usuario_id }, process.env.SEGREDO, { expiresIn: '1h' });
+                return { token };
+            }else{
+                return {
+                    severity: 'warn',
+                    detail: 'Email ou Senha incorretos'
+                }
+            }
+        }else{
+            return {
+                severity: 'warn',
+                detail: 'Email ou Senha incorretos'
+            }
+        }
+
+
     } catch (error) {
         return {
-            message: error.message,
-            status: "error"
+            severity: 'error',
+            detail: error.message
         }
     }
 }
@@ -67,39 +85,10 @@ async function criarUsuario(dados){
         }
     }
 }
-async function editarUsuario(dados){
+
+async function listarUsuarios(){
     try {
-        return await executarSQL(`SELECT * FROM vagas WHERE usuario_id = ${id};`);
-    } catch (error) {
-        return {
-            message: error.message,
-            status: "error"
-        }
-    }
-}
-async function deletarUsuario(dados){
-    try {
-        return await executarSQL(`SELECT * FROM vagas WHERE usuario_id = ${id};`);
-    } catch (error) {
-        return {
-            message: error.message,
-            status: "error"
-        }
-    }
-}
-async function logarUsuario(dados){
-    try {
-        return await executarSQL(`SELECT * FROM vagas WHERE usuario_id = ${id};`);
-    } catch (error) {
-        return {
-            message: error.message,
-            status: "error"
-        }
-    }
-}
-async function recuperarSenhaUsuario(dados){
-    try {
-        return await executarSQL(`SELECT * FROM vagas WHERE usuario_id = ${id};`);
+        return await executarSQL(`SELECT * FROM usuarios;`);
     } catch (error) {
         return {
             message: error.message,
@@ -108,44 +97,49 @@ async function recuperarSenhaUsuario(dados){
     }
 }
 
-async function logarUsuario(dados){
+async function listarUsuario(id){
     try {
-        if(!dados.usuario_email || dados.usuario_email == ""){
-            throw new Error("Campo email é obrigatório");
-        }
-
-        if(!dados.usuario_senha || dados.usuario_senha == ""){
-            throw new Error("Campo senha é obrigatório");
-        }
-
-        const res = await executarSQL(`SELECT * FROM usuarios WHERE usuario_email = '${dados.usuario_email}';`);
-
-        if(res.length > 0){
-            const compare = await bcrypt.compare(dados.usuario_senha, res[0].usuario_senha);
-            if(compare){
-                const token = jwt.sign({ id: res.usuario_id }, process.env.SEGREDO, { expiresIn: '1h' });
-                return { token };
-            }else{
-                return {
-                    severity: 'warn',
-                    detail: 'Email ou Senha incorretos'
-                }
-            }
-        }else{
-            return {
-                severity: 'warn',
-                detail: 'Email ou Senha incorretos'
-            }
-        }
-
-
+        return await executarSQL(`SELECT * FROM usuarios WHERE usuario_id = ${id};`);
     } catch (error) {
         return {
-            severity: 'error',
-            detail: error.message
+            message: error.message,
+            status: "error"
         }
     }
 }
+
+async function editarUsuario(id, dados){
+    try {
+        return await executarSQL(`UPDATE usuarios WHERE usuario_id = ${id};`);
+    } catch (error) {
+        return {
+            message: error.message,
+            status: "error"
+        }
+    }
+}
+async function deletarUsuario(id){
+    try {
+        return await executarSQL(`DELETE FROM usuarios WHERE usuario_id = ${id};`);
+    } catch (error) {
+        return {
+            message: error.message,
+            status: "error"
+        }
+    }
+}
+
+async function recuperarSenhaUsuario(dados,id){
+    try {
+        return await executarSQL(`SELECT * FROM usuarios WHERE usuario_id = ${id};`);
+    } catch (error) {
+        return {
+            message: error.message,
+            status: "error"
+        }
+    }
+}
+
 
 
 module.exports = {

@@ -17,7 +17,6 @@ app.get('/', (req, res) => {
 app.use("/vagas", vagasRoutes);
 app.use("/usuarios", usuarioRoutes);
 
-
 app.listen(8000, () => {
     console.log("Servidor on: http://localhost:8000");
 })
