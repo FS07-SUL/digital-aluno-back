@@ -2,6 +2,10 @@ const { listarUsuario, listarUsuarios, criarUsuario, editarUsuario, deletarUsuar
 
 const router = require("express").Router();
 
+router.post('/login', async (req, res) => {
+    res.send(await logarUsuario(req.body));
+});
+
 router.get("/", async (req, res) => {
     res.send(await listarUsuarios());
 });
@@ -16,10 +20,6 @@ router.patch("/:id", async (req, res) => {
 });
 router.delete("/:id", async (req, res) => {
     res.send(await deletarUsuario(req.params.id));
-});
-
-router.post('/login', async (req, res) => {
-    res.send(await logarUsuario(req.body));
 });
 
 router.post('/recuperar', async (req, res) => {

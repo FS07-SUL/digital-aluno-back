@@ -1,4 +1,6 @@
 const { executarSQL } = require("../database");
+require('dotenv').config();
+const jwt = require('jsonwebtoken');
 const bcrypt  = require("bcrypt");
 
 async function  logarUsuario(dados){
@@ -12,7 +14,6 @@ async function  logarUsuario(dados){
         }
 
         const res = await executarSQL(`SELECT * FROM usuarios WHERE usuario_email = '${dados.usuario_email}';`);
-
         if(res.length > 0){
             const compare = await bcrypt.compare(dados.usuario_senha, res[0].usuario_senha);
             if(compare){
@@ -52,7 +53,7 @@ async function criarUsuario(dados){
 
         let status = false;
 
-        bcrypt.hash(dados.usuario_senha, 10, async (err, hash) => {
+        await bcrypt.hash(dados.usuario_senha, 10, async (err, hash) => {
             if(err){
                 return {
                     severity: 'warn',
@@ -110,7 +111,8 @@ async function listarUsuario(id){
 
 async function editarUsuario(id, dados){
     try {
-        return await executarSQL(`UPDATE usuarios WHERE usuario_id = ${id};`);
+        return await executarSQL(`UPDATE usuarios SET usuario_email = '${dados.usuario_email}', usuario_senha = '${dados.usuario_senha}' WHERE usuario_id = ${id};`);
+        console.log(dados);
     } catch (error) {
         return {
             message: error.message,
@@ -118,6 +120,7 @@ async function editarUsuario(id, dados){
         }
     }
 }
+
 async function deletarUsuario(id){
     try {
         return await executarSQL(`DELETE FROM usuarios WHERE usuario_id = ${id};`);
@@ -130,9 +133,20 @@ async function deletarUsuario(id){
 }
 
 async function recuperarSenhaUsuario(dados,id){
+
     try {
-        return await executarSQL(`SELECT * FROM usuarios WHERE usuario_id = ${id};`);
-    } catch (error) {
+        if(!dados.usuario_email || dados.usuario_email == ""){
+            throw new Error("Campo email é obrigatório");
+        }
+        const res = await executarSQL(`SELECT * FROM usuarios WHERE usuario_email = '${dados.usuario_email}';`);
+        if(res.length == 0) {
+            return {
+                message: "Email nao cadastrado.",
+                status: "error"
+            }
+        }
+    } 
+        catch (error) {
         return {
             message: error.message,
             status: "error"
