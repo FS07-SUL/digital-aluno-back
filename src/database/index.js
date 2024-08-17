@@ -7,7 +7,7 @@ async function executarSQL(sql){
     const conexao = await mysql.createConnection({
         host: 'reforcodev.com',
         user: 'refo9178_FS07SUL_USER',
-        password: 'FS07SUL@123',
+        password: 'fs07sul_123',
         database: 'refo9178_FS07SUL'
     });
 
