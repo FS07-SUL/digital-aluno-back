@@ -152,6 +152,11 @@ async function recuperarSenhaUsuario(dados,id){
                 message: "Email nao cadastrado.",
                 status: "error"
             }
+        }else{
+            return {
+                message: "Um link foi enviado ao seu email para recuperar a senha.",
+                status: "success"
+            }
         }
     } 
         catch (error) {
