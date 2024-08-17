@@ -1,9 +1,10 @@
-const { executarSQL } = require("../database");
+// const { executarSQL } = require("../database");
+const { prisma } = require("../database");
 // const { editarMaterial } = require("./materialController");
 
 async function listarMateriais() {
     try {        
-        return await executarSQL(`SELECT * FROM materiais;`);
+        return await prisma.materiais.findMany();
     } catch (error) {
         return {
             message: error.message,
@@ -16,7 +17,11 @@ async function listarMaterialporCurso(id) {
         if (!id || id == "") {
             throw new Error("Campo id_curso é obrigatório")
         }
-        return await executarSQL(`SELECT * FROM materiais WHERE curso_id = ${id};`);
+        return await prisma.materiais.findMany({
+            where:{
+                curso_id: Number(id)
+            }
+        })
     } catch (error) {
         return {
             message: error.message,
@@ -30,7 +35,11 @@ async function listarMaterial(id) {
         if (!id || id == "") {
             throw new Error("Campo id_curso é obrigatório")
         }
-        return await executarSQL(`SELECT * FROM materiais WHERE material_id = ${id};`);
+        return await prisma.materiais.findFirst({
+            where:{
+                material_id: Number(id)
+            }
+        })
 
     } catch (error) {
         return {
@@ -53,7 +62,9 @@ async function criarMaterial(dados) {
             throw new Error("O campo curso_id é obrigatorio!")
         }
 
-        const result = await executarSQL(`INSERT INTO materiais (material_nome, material_link, curso_id) VALUES ('${dados.material_nome}','${dados.material_link}','${dados.curso_id}')`)
+        const result = await prisma.materiais.create({
+            data:dados
+        })
 
         if (result.affected_rows == 0) {
             return {
@@ -89,7 +100,12 @@ async function editarMaterial(id, dados) {
             throw new Error("O campo curso_id é obrigatorio!")
         }
 
-        const result = await executarSQL(`UPDATE materiais SET material_nome = '${dados.material_nome}', material_link = '${dados.material_link}', curso_id = '${dados.curso_id}'  WHERE material_id = ${id}`)
+        const result = await prisma.materiais.update({
+            where:{
+                material_id: Number(id)
+            },
+            data: dados
+        })
         return {
             severity: 'success',
             detail: 'Dados editados com sucesso'
@@ -106,7 +122,11 @@ async function deletarMaterial(id) {
         if (!id || id == "") {
             throw new Error("Campo id_curso é obrigatório")
         }
-        const result = await executarSQL(`DELETE FROM materiais WHERE material_id = ${id}`);
+        const result = await prisma.materiais.delete({
+            where:{
+                material_id: Number(id)
+            }
+        })
         return {
             severity: 'success',
             detail: 'Dados deletados com sucesso'

@@ -14,6 +14,8 @@ model cursos {
   criado_em       DateTime? @default(now()) @db.DateTime(0)
   atualizado_em   DateTime  @default(now()) @db.DateTime(0)
   curso_duracao   String    @db.VarChar(20)
+
+  material materiais[]
 }
 
 model materiais {
@@ -22,7 +24,9 @@ model materiais {
   material_link String   @db.VarChar(255)
   curso_id      Int
   criado_em     DateTime @default(now()) @db.DateTime(0)
-  atualizado_em DateTime @default(now()) @db.DateTime(0)
+  atualizado_em DateTime @default(now()) @db.DateTime(0)  
+
+   curso cursos @relation(fields: [curso_id], references: [curso_id])
 }
 
 model tarefas {
