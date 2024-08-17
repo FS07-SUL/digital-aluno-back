@@ -1,4 +1,7 @@
 const mysql = require("mysql2/promise");
+const { PrismaClient } = require("@prisma/client");
+
+const prisma = new PrismaClient();
 
 async function executarSQL(sql){
     const conexao = await mysql.createConnection({
@@ -16,5 +19,6 @@ async function executarSQL(sql){
 }
 
 module.exports = {
-    executarSQL
+    executarSQL,
+    prisma
 }
