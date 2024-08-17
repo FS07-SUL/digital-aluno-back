@@ -2,6 +2,8 @@ const { executarSQL } = require("../database");
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const bcrypt  = require("bcrypt");
+// const send = require("../services/nodemailer");
+
 
 async function  logarUsuario(dados){
     try {
@@ -90,7 +92,8 @@ async function criarUsuario(dados){
 async function listarUsuarios(){
     try {
         return await executarSQL(`SELECT * FROM usuarios;`);
-    } catch (error) {
+    } 
+    catch (error) {
         return {
             message: error.message,
             status: "error"
@@ -111,8 +114,7 @@ async function listarUsuario(id){
 
 async function editarUsuario(id, dados){
     try {
-        return await executarSQL(`UPDATE usuarios SET usuario_email = '${dados.usuario_email}', usuario_senha = '${dados.usuario_senha}' WHERE usuario_id = ${id};`);
-        console.log(dados);
+        const result = await executarSQL(`UPDATE usuarios SET usuario_email = '${dados.usuario_email}', usuario_senha = '${dados.usuario_senha}' WHERE usuario_id = ${id};`);
     } catch (error) {
         return {
             message: error.message,
@@ -123,7 +125,13 @@ async function editarUsuario(id, dados){
 
 async function deletarUsuario(id){
     try {
-        return await executarSQL(`DELETE FROM usuarios WHERE usuario_id = ${id};`);
+        const result = await executarSQL(`DELETE FROM usuarios WHERE usuario_id = ${id};`);
+
+        return {
+                severity: "success",
+                detail: "Usuario deletado com sucesso!"
+            }
+        
     } catch (error) {
         return {
             message: error.message,

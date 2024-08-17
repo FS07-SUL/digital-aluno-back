@@ -1,3 +1,4 @@
+// const { sendMail } = require("../controllers/mailController");
 const { listarUsuario, listarUsuarios, criarUsuario, editarUsuario, deletarUsuario, logarUsuario, recuperarSenhaUsuario } = require("../controllers/usuarioController");
 
 const router = require("express").Router();
@@ -25,5 +26,7 @@ router.delete("/:id", async (req, res) => {
 router.post('/recuperar', async (req, res) => {
     res.send(await recuperarSenhaUsuario(req.body));
 });
+
+// router.post('/send', sendMail)
 
 module.exports = router;
