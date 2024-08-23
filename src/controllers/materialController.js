@@ -1,6 +1,5 @@
-// const { executarSQL } = require("../database");
 const { prisma } = require("../database");
-// const { editarMaterial } = require("./materialController");
+
 
 async function listarMateriais() {
     try {        
