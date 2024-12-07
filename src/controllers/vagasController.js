@@ -1,8 +1,9 @@
-const { executarSQL } = require("../database");
+
+const { prisma } = require("../database");
 
 async function listarVagas(){
     try {
-        return await executarSQL(`SELECT * FROM vagas;`);
+        return await prisma.vagas.findMany();
     } catch (error) {
         return {
             message: error.message,
@@ -12,7 +13,11 @@ async function listarVagas(){
 }
 async function listarVaga(id){
     try {
-        return await executarSQL(`SELECT * FROM vagas WHERE vaga_id = ${id};`);
+        return await prisma.vagas.findUnique({
+            where: {
+                vaga_id: Number(id)
+            }
+        });
     } catch (error) {
         return {
             message: error.message,
@@ -21,13 +26,45 @@ async function listarVaga(id){
     }
 }
 async function criarVaga(dados){
-    return "criarVaga";
+    try {
+        return await prisma.vagas.create({
+            data: dados
+        });
+    } catch (error) {
+        return {
+            message: error.message,
+            status: "error"
+        }
+    }
 }
 async function editarVaga(id, dados){
-    return "editarVaga";
+    try {
+        return await prisma.vagas.update({
+            where: {
+                vaga_id: Number(id)
+            },
+            data: dados
+        });
+    } catch (error) {
+        return {
+            message: error.message,
+            status: "error"
+        }
+    }
 }
 async function deletarVaga(id){
-    return "deletarVaga";
+    try {
+        return await prisma.vagas.delete({
+            where: {
+                vaga_id: Number(id)
+            }
+        });
+    } catch (error) {
+        return {
+            message: error.message,
+            status: "error"
+        }
+    }
 }
 
 module.exports = {
